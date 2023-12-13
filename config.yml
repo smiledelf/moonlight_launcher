@@ -1,0 +1,9 @@
+version: 1
+
+devices:
+  - name: 'pc'
+    description: 'Gaming PC, source of the video stream.'
+    mac_address: '00.00.00.00.00.00'
+
+paths:
+  log: '/var/log/moonlight_launcher.log'
