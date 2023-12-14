@@ -140,29 +140,34 @@ def handle_event(action, device):
 
     """
 
-    logger.info("Observer detected a udev event, starting handling function.")
-    logger.debug(f"Detected udev event '{action}' for device '{device.device_node}'.")
+    try:
 
-    # count how many controllers are connected
-    count_controllers = 0
-    for device in context.list_devices().match_property('SUBSYSTEM', 'hidraw').match_tag('controller'):
-        count_controllers += 1
-    logger.debug(f"Number of controllers detected: {count_controllers}.")
+        logger.info("Observer detected a udev event, starting handling function.")
+        logger.debug(f"Detected udev event '{action}' for device '{device.device_node}'.")
 
-    if action == "add" and count_controllers == 1:
-        # first controller added
-        logger.debug("Handling logic: first controller added.")
-        pc_mac = read_mac_address_from_config()
-        send_magic_packet(pc_mac)
-        logger.info(f"Sent wake-on-lan (WOL) packet to {pc_mac}.")
-        turn_on_tv_and_switch_source()
-        launch_moonlight()
-        logger.success("Successfully handled logic: first controller added.")
-    elif action == "remove" and count_controllers == 0:
-        # last controller removed
-        logger.debug("Handling logic: last controller removed.")
-        turn_off_tv()
-        logger.success("Successfully handled logic: last controller removed.")
+        # count how many controllers are connected
+        count_controllers = 0
+        for device in context.list_devices().match_property('SUBSYSTEM', 'hidraw').match_tag('controller'):
+            count_controllers += 1
+        logger.debug(f"Number of controllers detected: {count_controllers}.")
+
+        if action == "add" and count_controllers == 1:
+            # first controller added
+            logger.debug("Handling logic: first controller added.")
+            pc_mac = read_mac_address_from_config()
+            send_magic_packet(pc_mac)
+            logger.info(f"Sent wake-on-lan (WOL) packet to {pc_mac}.")
+            turn_on_tv_and_switch_source()
+            launch_moonlight()
+            logger.success("Successfully handled logic: first controller added.")
+        elif action == "remove" and count_controllers == 0:
+            # last controller removed
+            logger.debug("Handling logic: last controller removed.")
+            turn_off_tv()
+            logger.success("Successfully handled logic: last controller removed.")
+
+    except Exception as e:
+        logger.error(f"Error handling event: {e}")
 
 
 if __name__ == "__main__":
