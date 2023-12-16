@@ -72,9 +72,6 @@ def turn_on_tv_and_switch_source():
     Note: this is by far the most brittle part of this whole script, thanks to CEC.
     """
 
-    cec.init()
-    logger.info("Initialised cec session.")
-
     tv = cec.Device(cec.CECDEVICE_TV)
 
     # send 'on' message every second until TV is on, timeout after 10 seconds
@@ -114,9 +111,6 @@ def turn_off_tv():
 
     """Turn off the TV (i.e put it on 'standby')
     """
-
-    cec.init()
-    logger.info("Initialised cec session.")
 
     tv = cec.Device(cec.CECDEVICE_TV)
     tv.standby()
@@ -177,6 +171,9 @@ if __name__ == "__main__":
     logger.success("Script successfully loaded. Beginning main module.")
     
     try:
+
+        cec.init()
+        logger.info("Initialised cec session.")
         
         # Create udev events monitor
         logger.info("Creating udev events monitor.")
