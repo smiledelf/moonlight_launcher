@@ -4,7 +4,7 @@ import time
 import yaml
 import pyudev
 import subprocess
-import cec # if crashes with 'cannot open shared object file', it may be a permissions error
+import cec
 import signal
 from wakeonlan import send_magic_packet
 from loguru import logger
