@@ -1,9 +1,11 @@
+#!/usr/bin/env python3
 import os
 import time
 import yaml
 import pyudev
 import subprocess
 import cec
+import signal
 from wakeonlan import send_magic_packet
 from loguru import logger
 
@@ -164,11 +166,28 @@ def handle_event(action, device):
         logger.error(f"Error handling event: {e}")
 
 
+def handle_stop_signals(signum, frame):
+
+    signal_dict = {
+        2: "SIGINT",  # Ctrl + C
+        15: "SIGTERM"  # Signal to terminate the process (e.g from htop)
+    }
+
+    logger.debug(f"Detected stop code: {signum} ({signal_dict[int(signum)]})")
+    logger.success("Successfully detected a stop signal, exiting the script...")
+    exit()
+
+
 if __name__ == "__main__":
 
+    # set up logging
     log_path = read_log_path_from_config()
     logger.add(sink=log_path)
     logger.success("Script successfully loaded. Beginning main module.")
+
+    # handle stop signals
+    signal.signal(signal.SIGINT, handle_stop_signals)
+    signal.signal(signal.SIGTERM, handle_stop_signals)  # TODO: how does this work with the new subprocess?
     
     try:
 
@@ -199,7 +218,4 @@ if __name__ == "__main__":
 
     except Exception as e:
         logger.error(f"Quit unexpectedly! Exception: {e}")
-        
-    observer.stop()
-    exit()
 
