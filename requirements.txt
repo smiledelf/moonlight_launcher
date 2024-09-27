@@ -1,0 +1,5 @@
+PyYAML==5.4.1
+pyudev==0.22.0
+cec==0.2.8
+wakeonlan==3.0.0
+loguru==0.7.2
