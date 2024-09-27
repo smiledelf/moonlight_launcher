@@ -1,1 +1,2 @@
-TODO: Readme file
+# Prerequisites
+Install cec for your Linux machine.
